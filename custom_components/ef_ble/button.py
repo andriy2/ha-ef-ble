@@ -15,7 +15,7 @@ from . import DeviceConfigEntry
 from .description_builder import EntityDescriptionBuilder
 from .eflib import DeviceBase, get_controls
 from .eflib.entity import controls
-from .entity import EcoflowEntity
+from .entity import EcoflowEntity, control_entity_category
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -75,6 +75,7 @@ class EcoflowButton(EcoflowEntity, ButtonEntity):
         self._attr_unique_id = f"ef_{device.serial_number}_{entity_description.key}"
         self._prop_name = entity_description.key
         self.entity_description = entity_description
+        self._attr_entity_category = control_entity_category(entity_description)
         self._availability_prop = entity_description.availability_prop
 
         if entity_description.translation_key is None:

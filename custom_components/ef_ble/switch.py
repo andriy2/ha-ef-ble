@@ -17,7 +17,7 @@ from .deprecated.switches import DEPRECATED_SWITCH_TYPES
 from .description_builder import EntityDescriptionBuilder
 from .eflib import DeviceBase, get_controls
 from .eflib.entity import controls
-from .entity import DeviceNamedEntity, EcoflowEntity
+from .entity import DeviceNamedEntity, EcoflowEntity, control_entity_category
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -128,6 +128,7 @@ class EcoflowSwitchEntity(EcoflowEntity, SwitchEntity):
         self._prop_name = entity_description.key
         self._set_state = getattr(device, f"enable_{self._prop_name}", None)
         self.entity_description = entity_description
+        self._attr_entity_category = control_entity_category(entity_description)
         self._on_off_state = getattr(device, self._prop_name, None)
         self._availability_prop = getattr(entity_description, "availability_prop", None)
 

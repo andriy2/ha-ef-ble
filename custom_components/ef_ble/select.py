@@ -11,7 +11,7 @@ from .deprecated.selects import SELECT_TYPES
 from .description_builder import EntityDescriptionBuilder
 from .eflib import DeviceBase, controls, get_controls
 from .eflib.entity import DynamicValue
-from .entity import EcoflowEntity
+from .entity import EcoflowEntity, control_entity_category
 
 
 @dataclasses.dataclass(kw_only=True, frozen=True)
@@ -115,6 +115,7 @@ class EcoflowSelect(EcoflowEntity, SelectEntity):
 
         self._attr_unique_id = f"ef_{self._device.serial_number}_{description.key}"
         self.entity_description = description
+        self._attr_entity_category = control_entity_category(description)
         self._prop_name = self.entity_description.key
         self._set_state = description.set_state
         self._attr_current_option = getattr(device, self._prop_name, None)
