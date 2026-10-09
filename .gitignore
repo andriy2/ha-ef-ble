@@ -1,1 +1,4 @@
 custom_components/ef_ble/eflib/pb/*.pyi
+.idea
+ha_ef_ble.egg-info
+uv.lock
