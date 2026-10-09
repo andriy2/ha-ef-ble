@@ -21,7 +21,7 @@ from .eflib import DeviceBase, controls, get_controls
 from .eflib.devices import smart_generator
 from .eflib.entity import DynamicValue
 from .eflib.props import Field
-from .entity import EcoflowEntity
+from .entity import EcoflowEntity, control_entity_category
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -193,6 +193,7 @@ class EcoflowNumber(EcoflowEntity, NumberEntity):
         super().__init__(device)
         self._attr_unique_id = f"ef_{device.serial_number}_{entity_description.key}"
         self.entity_description = entity_description
+        self._attr_entity_category = control_entity_category(entity_description)
         self._native_unit_of_measurement_field = (
             entity_description.native_unit_of_measurement_field
         )

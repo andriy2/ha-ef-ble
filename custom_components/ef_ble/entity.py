@@ -2,6 +2,7 @@ import dataclasses
 from collections.abc import Callable, Mapping
 from typing import Any, Protocol, runtime_checkable
 
+from homeassistant.const import EntityCategory
 from homeassistant.core import callback
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.device_registry import CONNECTION_BLUETOOTH, DeviceInfo
@@ -11,6 +12,32 @@ from homeassistant.helpers.restore_state import ExtraStoredData, RestoreEntity
 from .const import DOMAIN, MANUFACTURER
 from .eflib import DeviceBase
 from .eflib.device_mappings import battery_name_from_device
+
+# AC, DC and USB output port switches stay on the device page's Controls card, every other control
+# goes to Configuration
+_PORT_CONTROL_KEYS = frozenset(
+    {
+        "ac_1",
+        "ac_2",
+        "ac_hv_port",
+        "ac_lv_port",
+        "ac_port",
+        "ac_ports",
+        "ac_ports_2",
+        "dc_12v_port",
+        "dc_ports",
+        "usb_ports",
+    }
+)
+
+
+def control_entity_category(description: EntityDescription) -> EntityCategory | None:
+    """Entity category for a control entity, CONFIG unless it is an output port"""
+    if description.entity_category is not None:
+        return description.entity_category
+    if description.key in _PORT_CONTROL_KEYS:
+        return None
+    return EntityCategory.CONFIG
 
 
 class EcoflowEntity(Entity):
